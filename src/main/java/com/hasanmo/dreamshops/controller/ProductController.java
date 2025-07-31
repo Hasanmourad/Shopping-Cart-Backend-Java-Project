@@ -1,6 +1,7 @@
 package com.hasanmo.dreamshops.controller;
 
 import com.hasanmo.dreamshops.dto.ProductDto;
+import com.hasanmo.dreamshops.exceptions.AlreadyExistsException;
 import com.hasanmo.dreamshops.exceptions.ResourceNotFoundExeption;
 import com.hasanmo.dreamshops.model.Product;
 import com.hasanmo.dreamshops.request.AddProductRequest;
@@ -13,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,8 +49,8 @@ public class  ProductController {
         try {
         Product productNew = productService.addProduct(product);
         return ResponseEntity.ok(new ApiResponse("Add product success!", productNew));
-    } catch (Exception e) {
-        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+    } catch (AlreadyExistsException e) {
+        return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
     }
     }
 

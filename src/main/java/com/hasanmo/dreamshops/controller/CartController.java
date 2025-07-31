@@ -1,10 +1,12 @@
 package com.hasanmo.dreamshops.controller;
 
+import com.hasanmo.dreamshops.dto.CartDto;
 import com.hasanmo.dreamshops.exceptions.ResourceNotFoundExeption;
 import com.hasanmo.dreamshops.model.Cart;
 import com.hasanmo.dreamshops.response.ApiResponse;
 import com.hasanmo.dreamshops.service.cart.ICartService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +19,14 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequestMapping("${api.prefix}/carts")
 public class CartController {
     private final ICartService cartService;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/{cartId}/my-cart")
     public ResponseEntity<ApiResponse> getCart(@PathVariable Long cartId) {
         try {
             Cart cart = cartService.getCart(cartId);
-            return ResponseEntity.ok(new ApiResponse("Success", cart));
+            CartDto cartDto = modelMapper.map(cart, CartDto.class);
+            return ResponseEntity.ok(new ApiResponse("Success", cartDto));
         } catch (ResourceNotFoundExeption e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }

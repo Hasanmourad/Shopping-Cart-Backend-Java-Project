@@ -2,36 +2,39 @@ package com.hasanmo.dreamshops.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Blob;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-public class Image {
-
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private int quantity;
+    private BigDecimal price;
 
-    private String imageName;
-    private String imageType;
 
-    @Lob
     @JsonIgnore
-    private Blob image;
-
-    private String downloadUrl;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
 
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
 
+    public OrderItem(Order order, Product product, int quantity, BigDecimal price) {
+        this.order = order;
+        this.product = product;
+        this.quantity = quantity;
+        this.price = price;
+
+    }
 }

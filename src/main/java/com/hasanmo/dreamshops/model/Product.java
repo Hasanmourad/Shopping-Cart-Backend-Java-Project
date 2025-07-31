@@ -33,7 +33,7 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    
+
     public Product(Long id, String brand, String description, String name, BigDecimal price, int inventory, Category category) {
         this.id = id;
         this.brand = brand;
@@ -47,5 +47,3 @@ public class Product {
 
 
 }
-
-

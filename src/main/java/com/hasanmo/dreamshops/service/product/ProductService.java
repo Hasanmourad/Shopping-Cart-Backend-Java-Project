@@ -2,6 +2,7 @@ package com.hasanmo.dreamshops.service.product;
 
 import com.hasanmo.dreamshops.dto.ImageDto;
 import com.hasanmo.dreamshops.dto.ProductDto;
+import com.hasanmo.dreamshops.exceptions.AlreadyExistsException;
 import com.hasanmo.dreamshops.exceptions.ResourceNotFoundExeption;
 import com.hasanmo.dreamshops.model.Category;
 import com.hasanmo.dreamshops.model.Image;
@@ -31,6 +32,11 @@ public class ProductService implements IProductService {
     public Product addProduct(AddProductRequest request) {
         // Implementation here
 
+        if(productExists(request.getName(),request.getBrand()))
+        {
+            throw new AlreadyExistsException("this product name and brand already exist");
+        }
+
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
@@ -39,16 +45,22 @@ public class ProductService implements IProductService {
         request.setCategory(category);
         return productRepository.save(createProduct(request, category));
     }
+
+    private boolean productExists(String name,String brand){
+        return productRepository.existsByNameAndBrand(name, brand)
+;    }
+
+
     private Product createProduct(AddProductRequest request, Category category) {
 
         return new Product(
-            request.getId(),
-            request.getBrand(),
-            request.getDescription(),
-            request.getName(),
-            request.getPrice(),
-            request.getInventory(),
-            category
+                request.getId(),
+                request.getBrand(),
+                request.getDescription(),
+                request.getName(),
+                request.getPrice(),
+                request.getInventory(),
+                category
         );
     }
 
