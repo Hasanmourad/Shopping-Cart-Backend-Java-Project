@@ -34,7 +34,7 @@ public class JwtUtils {
                 .claim("roles", roles)
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + expirationTime))
-                .signWith(key(), SignatureAlgorithm.ES256).compact();
+                .signWith(key(), SignatureAlgorithm.HS256).compact();
     }
 
     private Key key()
